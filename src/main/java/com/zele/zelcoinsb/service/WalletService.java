@@ -13,11 +13,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Service
-@AllArgsConstructor
 public class WalletService {
-    private final LedgerService ledgerService;
-    private final @Lazy BlockChainService blockChainService;
+    private final BlockChainService blockChainService;
     private final TransactionService transactionService;
+
+    public WalletService(@Lazy BlockChainService blockChainService, TransactionService transactionService) {
+        this.blockChainService = blockChainService;
+        this.transactionService = transactionService;
+    }
 
     public Wallet createWallet() {
         Wallet wallet = new Wallet();
