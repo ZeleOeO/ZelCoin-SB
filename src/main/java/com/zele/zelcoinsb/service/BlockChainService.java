@@ -16,18 +16,11 @@ import java.util.logging.Logger;
 
 @Getter
 @Service
+@AllArgsConstructor
 public class BlockChainService {
     private final LedgerService ledgerService;
     private final BlockService blockService;
-    private final WalletService walletService;
     private final List<Block> blocks;
-
-    public BlockChainService(LedgerService ledgerService, BlockService blockService,@Lazy WalletService walletService) {
-        blocks = new ArrayList<>();
-        this.ledgerService = ledgerService;
-        this.blockService = blockService;
-        this.walletService = walletService;
-    }
 
     public void addGenesisBlock(Transaction transaction) {
         blocks.add(blockService.createBlock("genesis", transaction));
@@ -50,7 +43,6 @@ public class BlockChainService {
             Block newBlock = blockService.createBlock(blocks.getLast().getHash(), transaction);
             blockService.mineBlock(newBlock, 3);
             blocks.add(newBlock);
-            walletService.transact(transaction.getSender(), transaction.getReceiver(), transaction.getAmount());
         }
     }
 
