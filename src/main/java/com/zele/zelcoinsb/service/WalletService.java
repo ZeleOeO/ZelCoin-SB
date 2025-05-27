@@ -12,6 +12,7 @@ import com.zele.zelcoinsb.models.entities.Wallet;
 import com.zele.zelcoinsb.repository.WalletRepository;
 import com.zele.zelcoinsb.tools.CustomKeyPairGenerator;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +25,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Service
-@AllArgsConstructor
 public class WalletService {
     private final BlockChainService blockChainService;
     private final TransactionService transactionService;
     private final WalletRepository walletRepository;
     private final WalletMapper walletMapper;
     private final TransactionMapper transactionMapper;
+
+
+    public WalletService(BlockChainService blockChainService, @Lazy TransactionService transactionService, WalletRepository walletRepository, WalletMapper walletMapper, TransactionMapper transactionMapper) {
+        this.blockChainService = blockChainService;
+        this.transactionService = transactionService;
+        this.walletRepository = walletRepository;
+        this.walletMapper = walletMapper;
+        this.transactionMapper = transactionMapper;
+    }
 
     public List<WalletViewDTO> getAllWallets() {
         return walletRepository.findAll()

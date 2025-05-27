@@ -16,11 +16,14 @@ import java.util.logging.Logger;
 
 @Getter
 @Service
-@AllArgsConstructor
 public class BlockChainService {
     private final LedgerService ledgerService;
     private final BlockService blockService;
-    private final List<Block> blocks;
+    private final List<Block> blocks = new ArrayList<>();
+    public BlockChainService(LedgerService ledgerService, BlockService blockService) {
+        this.ledgerService = ledgerService;
+        this.blockService = blockService;
+    }
 
     public void addGenesisBlock(Transaction transaction) {
         blocks.add(blockService.createBlock("genesis", transaction));

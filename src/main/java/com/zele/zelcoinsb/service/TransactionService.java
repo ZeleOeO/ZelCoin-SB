@@ -7,6 +7,7 @@ import com.zele.zelcoinsb.models.dtos.transaction.TransactionViewDTO;
 import com.zele.zelcoinsb.models.entities.Transaction;
 import com.zele.zelcoinsb.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,12 +18,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class TransactionService {
     private final LedgerService ledgerService;
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
     private final WalletService walletService;
+
+    public TransactionService(LedgerService ledgerService, TransactionRepository transactionRepository, TransactionMapper transactionMapper,@Lazy WalletService walletService) {
+        this.ledgerService = ledgerService;
+        this.transactionRepository = transactionRepository;
+        this.transactionMapper = transactionMapper;
+        this.walletService = walletService;
+    }
 
     public List<TransactionViewDTO> getAllTransactions() {
         return transactionRepository.findAll()
