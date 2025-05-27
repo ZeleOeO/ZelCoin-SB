@@ -19,13 +19,14 @@ import java.util.logging.Logger;
 @AllArgsConstructor
 public class BlockChainService {
     private final LedgerService ledgerService;
+    private final WalletService walletService;
     private List<Block> blocks;
     private LedgerService ledger;
 
     @PostConstruct
     public void addGenesisBlock() {
-        Wallet genesisWallet1 = new Wallet();
-        Wallet genesisWallet2 = new Wallet();
+        Wallet genesisWallet1 = walletService.createWallet();
+        Wallet genesisWallet2 = walletService.createWallet();
         Transaction genesisTransaction1 = new Transaction(0.0, genesisWallet1.getPublicKey(), genesisWallet2.getPublicKey());
         blocks.add(new Block("0", genesisTransaction1));
     }
