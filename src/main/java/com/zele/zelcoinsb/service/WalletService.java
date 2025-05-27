@@ -2,6 +2,7 @@ package com.zele.zelcoinsb.service;
 
 import com.zele.zelcoinsb.models.entities.Transaction;
 import com.zele.zelcoinsb.models.entities.Wallet;
+import com.zele.zelcoinsb.tools.CustomKeyPairGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class WalletService {
 
     public Wallet createWallet() {
         Wallet wallet = new Wallet();
-        var keypair = generateKeyPair();
+        var keypair = CustomKeyPairGenerator.generateKeyPair();
         wallet.setPrivateKey(keypair.getPrivate());
         wallet.setPublicKey(keypair.getPublic());
         wallet.setBalance(0.0);
@@ -45,18 +46,5 @@ public class WalletService {
             logger.log(Level.SEVERE, e.getMessage());
         }
         blockChainService.addBlock(transaction, senderWallet.getPublicKey(), signature);
-    }
-
-    private KeyPair generateKeyPair() {
-        Logger logger = Logger.getLogger(WalletService.class.getName());
-        KeyPairGenerator generator = null;
-        try {
-            generator = KeyPairGenerator.getInstance("RSA");
-        } catch (NoSuchAlgorithmException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-        }
-        assert generator != null;
-        generator.initialize(2048);
-        return generator.generateKeyPair();
     }
 }
