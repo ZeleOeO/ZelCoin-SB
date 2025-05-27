@@ -1,7 +1,10 @@
 package com.zele.zelcoinsb.models.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -31,7 +34,9 @@ public class Block {
     @JoinColumn(name = "transaction_id")
     private Transaction transaction;
 
-    public Block() {
+    public Block(String prevHash, Transaction transaction) {
+        this.prevHash = prevHash;
+        this.transaction = transaction;
         this.timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.hash = calculateHash();
     }
@@ -51,7 +56,7 @@ public class Block {
         return builder.toString();
     }
 
-     public void mineBlock(int difficulty) {
+    public void mineBlock(int difficulty) {
         String target = new String(new char[difficulty]).replace('\0', '0');
         while (!hash.substring(0, difficulty).equals(target)) {
             nonce++;
