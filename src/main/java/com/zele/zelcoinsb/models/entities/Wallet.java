@@ -1,5 +1,6 @@
 package com.zele.zelcoinsb.models.entities;
 
+import com.zele.zelcoinsb.service.WalletService;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,23 +28,4 @@ public class Wallet {
     private PrivateKey privateKey;
 
     private Double balance;
-
-    public Wallet() {
-        var keypair = generateKeyPair();
-        this.publicKey = keypair.getPublic();
-        this.privateKey = keypair.getPrivate();
-    }
-
-    private KeyPair generateKeyPair() {
-        Logger logger = Logger.getLogger(Wallet.class.getName());
-        KeyPairGenerator generator = null;
-        try {
-            generator = KeyPairGenerator.getInstance("RSA");
-        } catch (NoSuchAlgorithmException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-        }
-        assert generator != null;
-        generator.initialize(2048);
-        return generator.generateKeyPair();
-    }
 }
