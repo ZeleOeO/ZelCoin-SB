@@ -2,11 +2,8 @@ package com.zele.zelcoinsb.service;
 
 import com.zele.zelcoinsb.models.entities.Block;
 import com.zele.zelcoinsb.models.entities.Transaction;
-import com.zele.zelcoinsb.models.entities.Wallet;
-import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;

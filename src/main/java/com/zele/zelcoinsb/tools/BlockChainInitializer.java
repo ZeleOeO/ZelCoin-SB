@@ -1,6 +1,5 @@
 package com.zele.zelcoinsb.tools;
 
-import com.zele.zelcoinsb.models.entities.Block;
 import com.zele.zelcoinsb.models.entities.Transaction;
 import com.zele.zelcoinsb.models.entities.Wallet;
 import com.zele.zelcoinsb.service.BlockChainService;

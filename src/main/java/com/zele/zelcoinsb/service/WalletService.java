@@ -1,7 +1,7 @@
 package com.zele.zelcoinsb.service;
 
-import com.zele.zelcoinsb.models.entities.Wallet;
 import com.zele.zelcoinsb.models.entities.Transaction;
+import com.zele.zelcoinsb.models.entities.Wallet;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;

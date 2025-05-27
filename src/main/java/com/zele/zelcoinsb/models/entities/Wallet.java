@@ -1,6 +1,5 @@
 package com.zele.zelcoinsb.models.entities;
 
-import com.zele.zelcoinsb.service.WalletService;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,9 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.security.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 
 @Entity
 @Getter

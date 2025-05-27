@@ -3,14 +3,8 @@ package com.zele.zelcoinsb.models.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Entity
 @Getter
