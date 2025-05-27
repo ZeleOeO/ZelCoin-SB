@@ -20,10 +20,11 @@ import java.util.logging.Logger;
 @AllArgsConstructor
 public class BlockChainService {
     private final LedgerService ledgerService;
+    private final BlockService blockService;
     private List<Block> blocks;
 
     public void addGenesisBlock(Transaction transaction) {
-        blocks.add(new Block("Genesis", transaction));
+        blocks.add(blockService.createBlock("genesis", transaction));
     }
 
     public void addBlock(Transaction transaction, PublicKey publicKey, byte[] signature) {
@@ -40,8 +41,8 @@ public class BlockChainService {
         }
 
         if (isValid) {
-            Block newBlock = new Block(blocks.getLast().getHash(), transaction);
-            newBlock.mineBlock(3);
+            Block newBlock = blockService.createBlock(blocks.getLast().getHash(), transaction);
+            blockService.mineBlock(newBlock, 3);
             blocks.add(newBlock);
             ledgerService.transact(transaction.getSender(), transaction.getReceiver(), transaction.getAmount());
         }
