@@ -1,11 +1,13 @@
 package com.zele.zelcoinsb.service;
 
 import com.zele.zelcoinsb.exceptions.transaction.TransactionNotFoundException;
+import com.zele.zelcoinsb.exceptions.wallet.WalletNotFoundException;
 import com.zele.zelcoinsb.mapper.TransactionMapper;
 import com.zele.zelcoinsb.models.dtos.transaction.TransactionCreateRequest;
 import com.zele.zelcoinsb.models.dtos.transaction.TransactionViewDTO;
 import com.zele.zelcoinsb.models.entities.Transaction;
 import com.zele.zelcoinsb.repository.TransactionRepository;
+import com.zele.zelcoinsb.repository.WalletRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -23,12 +25,14 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
     private final WalletService walletService;
+    private final WalletRepository walletRepository;
 
-    public TransactionService(LedgerService ledgerService, TransactionRepository transactionRepository, TransactionMapper transactionMapper,@Lazy WalletService walletService) {
+    public TransactionService(LedgerService ledgerService, TransactionRepository transactionRepository, TransactionMapper transactionMapper, @Lazy WalletService walletService, WalletRepository walletRepository) {
         this.ledgerService = ledgerService;
         this.transactionRepository = transactionRepository;
         this.transactionMapper = transactionMapper;
         this.walletService = walletService;
+        this.walletRepository = walletRepository;
     }
 
     public List<TransactionViewDTO> getAllTransactions() {
@@ -46,7 +50,10 @@ public class TransactionService {
 
 
     public ResponseEntity<TransactionViewDTO> createTransaction(TransactionCreateRequest createRequest) {
-        return walletService.transact(createRequest.getSender(), createRequest.getReceiver(), createRequest.getAmount());
+        var senderWallet = walletRepository.findById(createRequest.getSender()).orElse(null);
+        var receiverWallet = walletRepository.findById(createRequest.getReceiver()).orElse(null);
+        if (senderWallet == null || receiverWallet == null) throw new WalletNotFoundException("Sender or receiver does not exist");
+        return walletService.transact(senderWallet.getPublicKey(), receiverWallet.getPublicKey(), createRequest.getAmount());
     }
 
     private void checkTransactionInDB(Transaction transaction) {

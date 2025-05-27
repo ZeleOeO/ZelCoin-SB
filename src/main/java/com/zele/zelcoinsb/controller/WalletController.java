@@ -14,7 +14,7 @@ import java.util.List;
 public class WalletController {
     private WalletService walletService;
 
-    @GetMapping()
+    @GetMapping("/all")
     public List<WalletViewDTO> getAllWallets() {
         return walletService.getAllWallets();
     }
@@ -24,7 +24,7 @@ public class WalletController {
         return walletService.getWalletById(id);
     }
 
-    @PostMapping("")
+    @PostMapping("/new")
     public ResponseEntity<WalletViewDTO> createWallet() {
         return walletService.createWalletController();
     }

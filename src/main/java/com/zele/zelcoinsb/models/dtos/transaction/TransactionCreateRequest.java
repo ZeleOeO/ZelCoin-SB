@@ -14,7 +14,7 @@ import java.security.PublicKey;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TransactionCreateRequest {
-    private PublicKey sender;
-    private PublicKey receiver;
+    private Long sender;
+    private Long receiver;
     private Double amount;
 }

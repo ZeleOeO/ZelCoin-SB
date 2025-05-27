@@ -10,6 +10,7 @@ import com.zele.zelcoinsb.models.dtos.transaction.TransactionViewDTO;
 import com.zele.zelcoinsb.models.dtos.wallet.WalletViewDTO;
 import com.zele.zelcoinsb.models.entities.Transaction;
 import com.zele.zelcoinsb.models.entities.Wallet;
+import com.zele.zelcoinsb.repository.TransactionRepository;
 import com.zele.zelcoinsb.repository.WalletRepository;
 import com.zele.zelcoinsb.tools.CustomKeyPairGenerator;
 import lombok.AllArgsConstructor;
@@ -32,14 +33,16 @@ public class WalletService {
     private final WalletRepository walletRepository;
     private final WalletMapper walletMapper;
     private final TransactionMapper transactionMapper;
+    private final TransactionRepository transactionRepository;
 
 
-    public WalletService(BlockChainService blockChainService, @Lazy TransactionService transactionService, WalletRepository walletRepository, WalletMapper walletMapper, TransactionMapper transactionMapper) {
+    public WalletService(BlockChainService blockChainService, @Lazy TransactionService transactionService, WalletRepository walletRepository, WalletMapper walletMapper, TransactionMapper transactionMapper, TransactionRepository transactionRepository) {
         this.blockChainService = blockChainService;
         this.transactionService = transactionService;
         this.walletRepository = walletRepository;
         this.walletMapper = walletMapper;
         this.transactionMapper = transactionMapper;
+        this.transactionRepository = transactionRepository;
     }
 
     public List<WalletViewDTO> getAllWallets() {
@@ -78,6 +81,7 @@ public class WalletService {
         receiverWallet.setBalance(receiverWallet.getBalance() + amount);
         walletRepository.save(senderWallet);
         walletRepository.save(receiverWallet);
+        transactionRepository.save(transaction);
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionMapper.toTransactionViewDTO(transaction));
      }
 
