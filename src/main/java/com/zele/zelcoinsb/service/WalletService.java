@@ -1,5 +1,6 @@
 package com.zele.zelcoinsb.service;
 
+import com.zele.zelcoinsb.exceptions.transaction.TransactionErrorException;
 import com.zele.zelcoinsb.exceptions.wallet.WalletInsufficientFundsException;
 import com.zele.zelcoinsb.exceptions.wallet.WalletNotFoundException;
 import com.zele.zelcoinsb.exceptions.wallet.WalletSignatureErrorException;
@@ -54,11 +55,11 @@ public class WalletService {
         return ResponseEntity.status(HttpStatus.OK).body(walletMapper.toWalletViewDTO(wallet));
     }
 
-    public ResponseEntity<WalletViewDTO> getWalletByWalletAddress(PublicKey publicKey) {
-        var wallet = walletRepository.findByPublicKey(publicKey).orElse(null);
-        checkWalletInDB(wallet);
-        return ResponseEntity.status(HttpStatus.OK).body(walletMapper.toWalletViewDTO(wallet));
-    }
+//    public ResponseEntity<WalletViewDTO> getWalletByWalletAddress(PublicKey publicKey) {
+//        var wallet = walletRepository.findByPublicKey(publicKey).orElse(null);
+//        checkWalletInDB(wallet);
+//        return ResponseEntity.status(HttpStatus.OK).body(walletMapper.toWalletViewDTO(wallet));
+//    }
 
     public ResponseEntity<WalletViewDTO> createWalletController() {
         Wallet wallet = createWallet();
@@ -71,6 +72,7 @@ public class WalletService {
         var receiverWallet = walletRepository.findByPublicKey(receiver).orElse(null);
         checkWalletInDB(senderWallet);
         checkWalletInDB(receiverWallet);
+        if (senderWallet.getPublicKey().equals(receiverWallet.getPublicKey())) throw new TransactionErrorException("Cannot transact with same sender and receiver");
         Transaction transaction = sendMoney(amount, senderWallet, receiver);
         senderWallet.setBalance(senderWallet.getBalance() - amount);
         receiverWallet.setBalance(receiverWallet.getBalance() + amount);
