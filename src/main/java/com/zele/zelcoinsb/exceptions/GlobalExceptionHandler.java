@@ -5,7 +5,6 @@ import com.zele.zelcoinsb.exceptions.transaction.TransactionNotFoundException;
 import com.zele.zelcoinsb.exceptions.wallet.WalletInsufficientFundsException;
 import com.zele.zelcoinsb.exceptions.wallet.WalletNotFoundException;
 import com.zele.zelcoinsb.exceptions.wallet.WalletSignatureErrorException;
-import com.zele.zelcoinsb.models.entities.Transaction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

@@ -1,9 +1,6 @@
 package com.zele.zelcoinsb.tools;
 
 import com.zele.zelcoinsb.service.WalletService;
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;

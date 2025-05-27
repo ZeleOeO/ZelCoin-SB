@@ -2,9 +2,7 @@ package com.zele.zelcoinsb.service;
 
 import com.zele.zelcoinsb.models.entities.Block;
 import com.zele.zelcoinsb.models.entities.Transaction;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -20,6 +18,7 @@ public class BlockChainService {
     private final LedgerService ledgerService;
     private final BlockService blockService;
     private final List<Block> blocks = new ArrayList<>();
+
     public BlockChainService(LedgerService ledgerService, BlockService blockService) {
         this.ledgerService = ledgerService;
         this.blockService = blockService;

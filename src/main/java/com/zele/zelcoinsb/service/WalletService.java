@@ -13,8 +13,6 @@ import com.zele.zelcoinsb.models.entities.Wallet;
 import com.zele.zelcoinsb.repository.TransactionRepository;
 import com.zele.zelcoinsb.repository.WalletRepository;
 import com.zele.zelcoinsb.tools.CustomKeyPairGenerator;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +21,6 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Service
 public class WalletService {
@@ -70,12 +66,13 @@ public class WalletService {
         return ResponseEntity.status(HttpStatus.CREATED).body(walletMapper.toWalletViewDTO(wallet));
     }
 
-     public ResponseEntity<TransactionViewDTO> transact(PublicKey sender, PublicKey receiver, Double amount) {
+    public ResponseEntity<TransactionViewDTO> transact(PublicKey sender, PublicKey receiver, Double amount) {
         var senderWallet = walletRepository.findByPublicKey(sender).orElse(null);
         var receiverWallet = walletRepository.findByPublicKey(receiver).orElse(null);
         checkWalletInDB(senderWallet);
         checkWalletInDB(receiverWallet);
-        if (senderWallet.getPublicKey().equals(receiverWallet.getPublicKey())) throw new TransactionErrorException("Cannot transact with same sender and receiver");
+        if (senderWallet.getPublicKey().equals(receiverWallet.getPublicKey()))
+            throw new TransactionErrorException("Cannot transact with same sender and receiver");
         Transaction transaction = sendMoney(amount, senderWallet, receiver);
         senderWallet.setBalance(senderWallet.getBalance() - amount);
         receiverWallet.setBalance(receiverWallet.getBalance() + amount);
@@ -83,11 +80,11 @@ public class WalletService {
         walletRepository.save(receiverWallet);
         transactionRepository.save(transaction);
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionMapper.toTransactionViewDTO(transaction));
-     }
+    }
 
     // Helper Methods
     private void checkWalletInDB(Wallet wallet) {
-        if (wallet==null) throw new WalletNotFoundException("Wallet not found in DB.");
+        if (wallet == null) throw new WalletNotFoundException("Wallet not found in DB.");
     }
 
     public Transaction sendMoney(Double amount, Wallet senderWallet, PublicKey receiverPublicKey) {

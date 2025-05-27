@@ -8,7 +8,6 @@ import com.zele.zelcoinsb.models.dtos.transaction.TransactionViewDTO;
 import com.zele.zelcoinsb.models.entities.Transaction;
 import com.zele.zelcoinsb.repository.TransactionRepository;
 import com.zele.zelcoinsb.repository.WalletRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +51,8 @@ public class TransactionService {
     public ResponseEntity<TransactionViewDTO> createTransaction(TransactionCreateRequest createRequest) {
         var senderWallet = walletRepository.findById(createRequest.getSender()).orElse(null);
         var receiverWallet = walletRepository.findById(createRequest.getReceiver()).orElse(null);
-        if (senderWallet == null || receiverWallet == null) throw new WalletNotFoundException("Sender or receiver does not exist");
+        if (senderWallet == null || receiverWallet == null)
+            throw new WalletNotFoundException("Sender or receiver does not exist");
         return walletService.transact(senderWallet.getPublicKey(), receiverWallet.getPublicKey(), createRequest.getAmount());
     }
 

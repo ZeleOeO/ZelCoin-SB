@@ -2,7 +2,6 @@ package com.zele.zelcoinsb.mapper;
 
 import com.zele.zelcoinsb.models.dtos.wallet.WalletViewDTO;
 import com.zele.zelcoinsb.models.entities.Wallet;
-import com.zele.zelcoinsb.service.WalletService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
