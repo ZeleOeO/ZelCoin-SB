@@ -23,4 +23,10 @@ public class Transaction {
     private Double amount;
     private PublicKey sender;
     private PublicKey receiver;
+
+    public Transaction(Double amount, PublicKey senderKey, PublicKey receiverKey) {
+        this.amount = amount;
+        this.sender = senderKey;
+        this.receiver = receiverKey;
+    }
 }
