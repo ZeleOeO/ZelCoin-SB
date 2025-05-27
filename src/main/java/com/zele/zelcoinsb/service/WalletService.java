@@ -3,7 +3,9 @@ package com.zele.zelcoinsb.service;
 import com.zele.zelcoinsb.exceptions.wallet.WalletInsufficientFundsException;
 import com.zele.zelcoinsb.exceptions.wallet.WalletNotFoundException;
 import com.zele.zelcoinsb.exceptions.wallet.WalletSignatureErrorException;
+import com.zele.zelcoinsb.mapper.TransactionMapper;
 import com.zele.zelcoinsb.mapper.WalletMapper;
+import com.zele.zelcoinsb.models.dtos.transaction.TransactionViewDTO;
 import com.zele.zelcoinsb.models.dtos.wallet.WalletViewDTO;
 import com.zele.zelcoinsb.models.entities.Transaction;
 import com.zele.zelcoinsb.models.entities.Wallet;
@@ -28,6 +30,7 @@ public class WalletService {
     private final TransactionService transactionService;
     private final WalletRepository walletRepository;
     private final WalletMapper walletMapper;
+    private final TransactionMapper transactionMapper;
 
     public List<WalletViewDTO> getAllWallets() {
         return walletRepository.findAll()
@@ -54,17 +57,17 @@ public class WalletService {
         return ResponseEntity.status(HttpStatus.CREATED).body(walletMapper.toWalletViewDTO(wallet));
     }
 
-     public ResponseEntity<WalletViewDTO> transact(PublicKey sender, PublicKey receiver, Double amount) {
+     public ResponseEntity<TransactionViewDTO> transact(PublicKey sender, PublicKey receiver, Double amount) {
         var senderWallet = walletRepository.findByPublicKey(sender).orElse(null);
         var receiverWallet = walletRepository.findByPublicKey(receiver).orElse(null);
         checkWalletInDB(senderWallet);
         checkWalletInDB(receiverWallet);
-        sendMoney(amount, senderWallet, receiver);
+        Transaction transaction = sendMoney(amount, senderWallet, receiver);
         senderWallet.setBalance(senderWallet.getBalance() - amount);
         receiverWallet.setBalance(receiverWallet.getBalance() + amount);
         walletRepository.save(senderWallet);
         walletRepository.save(receiverWallet);
-        return ResponseEntity.status(HttpStatus.CREATED).body(walletMapper.toWalletViewDTO(walletRepository.save(senderWallet)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(transactionMapper.toTransactionViewDTO(transaction));
      }
 
     // Helper Methods
@@ -72,7 +75,7 @@ public class WalletService {
         if (wallet==null) throw new WalletNotFoundException("Wallet not found in DB.");
     }
 
-    public void sendMoney(Double amount, Wallet senderWallet, PublicKey receiverPublicKey) {
+    public Transaction sendMoney(Double amount, Wallet senderWallet, PublicKey receiverPublicKey) {
         if (senderWallet.getBalance() < amount) {
             throw new WalletInsufficientFundsException("Insufficient Funds");
         }
@@ -88,6 +91,7 @@ public class WalletService {
             throw new WalletSignatureErrorException(e.getMessage());
         }
         blockChainService.addBlock(transaction, senderWallet.getPublicKey(), signature);
+        return transaction;
     }
 
     public Wallet createWallet() {

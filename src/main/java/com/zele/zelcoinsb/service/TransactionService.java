@@ -1,17 +1,50 @@
 package com.zele.zelcoinsb.service;
 
+import com.zele.zelcoinsb.exceptions.transaction.TransactionNotFoundException;
+import com.zele.zelcoinsb.mapper.TransactionMapper;
+import com.zele.zelcoinsb.models.dtos.transaction.TransactionCreateRequest;
+import com.zele.zelcoinsb.models.dtos.transaction.TransactionViewDTO;
 import com.zele.zelcoinsb.models.entities.Transaction;
+import com.zele.zelcoinsb.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.PublicKey;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class TransactionService {
     private final LedgerService ledgerService;
+    private final TransactionRepository transactionRepository;
+    private final TransactionMapper transactionMapper;
+    private final WalletService walletService;
+
+    public List<TransactionViewDTO> getAllTransactions() {
+        return transactionRepository.findAll()
+                .stream()
+                .map(transactionMapper::toTransactionViewDTO)
+                .toList();
+    }
+
+    public ResponseEntity<TransactionViewDTO> getTransactionById(Long txId) {
+        var transaction = transactionRepository.findById(txId).orElse(null);
+        checkTransactionInDB(transaction);
+        return ResponseEntity.status(HttpStatus.OK).body(transactionMapper.toTransactionViewDTO(transaction));
+    }
+
+
+    public ResponseEntity<TransactionViewDTO> createTransaction(TransactionCreateRequest createRequest) {
+        return walletService.transact(createRequest.getSender(), createRequest.getReceiver(), createRequest.getAmount());
+    }
+
+    private void checkTransactionInDB(Transaction transaction) {
+        if (transaction == null) throw new TransactionNotFoundException("Transaction not found");
+    }
 
     public Transaction createTransaction(Double amount, PublicKey sender, PublicKey receiverKey) {
         Transaction transaction = new Transaction();
