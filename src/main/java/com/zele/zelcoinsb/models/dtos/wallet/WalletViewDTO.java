@@ -16,6 +16,6 @@ import java.security.PublicKey;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WalletViewDTO {
     private Long id;
-    private PublicKey walletAddress;
+    private String walletAddress;
     private Double accountBalance;
 }

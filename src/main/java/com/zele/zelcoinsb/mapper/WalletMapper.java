@@ -12,7 +12,7 @@ public class WalletMapper {
     public WalletViewDTO toWalletViewDTO(Wallet wallet) {
         WalletViewDTO walletViewDTO = new WalletViewDTO();
         walletViewDTO.setId(wallet.getId());
-        walletViewDTO.setWalletAddress(wallet.getPublicKey());
+        walletViewDTO.setWalletAddress(wallet.getPublicKey().toString());
         walletViewDTO.setAccountBalance(wallet.getBalance());
         return walletViewDTO;
     }
