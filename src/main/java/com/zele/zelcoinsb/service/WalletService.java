@@ -34,7 +34,7 @@ public class WalletService {
             logger.log(Level.SEVERE, "Insufficient funds");
             return;
         }
-        var transaction = new Transaction(amount, senderWallet.getPublicKey(), receiverPublicKey);
+        Transaction transaction = transactionService.createTransaction(amount, senderWallet.getPublicKey(), receiverPublicKey);
         Signature sign;
         byte[] signature = null;
         try {

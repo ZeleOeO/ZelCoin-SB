@@ -8,11 +8,12 @@ import jakarta.persistence.Id;
 import lombok.*;
 
 import java.security.PublicKey;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Transaction {
@@ -23,10 +24,9 @@ public class Transaction {
     private Double amount;
     private PublicKey sender;
     private PublicKey receiver;
+    private String timestamp;
 
-    public Transaction(Double amount, PublicKey senderKey, PublicKey receiverKey) {
-        this.amount = amount;
-        this.sender = senderKey;
-        this.receiver = receiverKey;
+    public Transaction() {
+        timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 }
