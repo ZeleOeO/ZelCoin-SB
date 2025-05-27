@@ -6,6 +6,7 @@ import com.zele.zelcoinsb.models.entities.Wallet;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -19,16 +20,10 @@ import java.util.logging.Logger;
 @AllArgsConstructor
 public class BlockChainService {
     private final LedgerService ledgerService;
-    private final WalletService walletService;
     private List<Block> blocks;
-    private LedgerService ledger;
 
-    @PostConstruct
-    public void addGenesisBlock() {
-        Wallet genesisWallet1 = walletService.createWallet();
-        Wallet genesisWallet2 = walletService.createWallet();
-        Transaction genesisTransaction1 = new Transaction(0.0, genesisWallet1.getPublicKey(), genesisWallet2.getPublicKey());
-        blocks.add(new Block("0", genesisTransaction1));
+    public void addGenesisBlock(Transaction transaction) {
+        blocks.add(new Block("Genesis", transaction));
     }
 
     public void addBlock(Transaction transaction, PublicKey publicKey, byte[] signature) {

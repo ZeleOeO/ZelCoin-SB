@@ -3,6 +3,7 @@ package com.zele.zelcoinsb.service;
 import com.zele.zelcoinsb.models.entities.Wallet;
 import com.zele.zelcoinsb.models.entities.Transaction;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -14,7 +15,7 @@ import java.util.logging.Logger;
 @AllArgsConstructor
 public class WalletService {
     private final LedgerService ledgerService;
-    private final BlockChainService blockChainService;
+    private final @Lazy BlockChainService blockChainService;
 
     public Wallet createWallet() {
         Wallet wallet = new Wallet();
