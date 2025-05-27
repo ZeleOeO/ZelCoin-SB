@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 public class WalletService {
     private final LedgerService ledgerService;
     private final @Lazy BlockChainService blockChainService;
+    private final TransactionService transactionService;
 
     public Wallet createWallet() {
         Wallet wallet = new Wallet();
@@ -27,10 +28,23 @@ public class WalletService {
         return wallet;
     }
 
+    public void creditWallet(PublicKey publicKey, Double amount) {
+        //TODO implement find wallet by public key to update balance
+//        wallet.setBalance(balance);
+    }
+     public void debitWallet(PublicKey wallet, Double amount) {
+         //TODO implement find wallet by public key to update balance
+//        wallet.setBalance(balance);
+     }
+
+     public void transact(PublicKey sender, PublicKey receiver, Double amount) {
+        debitWallet(sender, amount);
+        creditWallet(sender, amount);
+     }
 
     public void sendMoney(Double amount, Wallet senderWallet, PublicKey receiverPublicKey) {
         Logger logger = Logger.getLogger(WalletService.class.getName());
-        if (ledgerService.getBalance(senderWallet.getPublicKey()) < amount) {
+        if (senderWallet.getBalance() < amount) {
             logger.log(Level.SEVERE, "Insufficient funds");
             return;
         }
