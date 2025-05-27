@@ -26,7 +26,4 @@ public class Transaction {
     private PublicKey receiver;
     private String timestamp;
 
-    public Transaction() {
-        timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-    }
 }

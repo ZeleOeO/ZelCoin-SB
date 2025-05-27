@@ -4,6 +4,7 @@ import com.zele.zelcoinsb.models.entities.Block;
 import com.zele.zelcoinsb.models.entities.Transaction;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -18,6 +19,7 @@ import java.util.logging.Logger;
 public class BlockChainService {
     private final LedgerService ledgerService;
     private final BlockService blockService;
+    private final @Lazy WalletService walletService;
     private List<Block> blocks;
 
     public void addGenesisBlock(Transaction transaction) {
@@ -41,7 +43,7 @@ public class BlockChainService {
             Block newBlock = blockService.createBlock(blocks.getLast().getHash(), transaction);
             blockService.mineBlock(newBlock, 3);
             blocks.add(newBlock);
-            ledgerService.transact(transaction.getSender(), transaction.getReceiver(), transaction.getAmount());
+            walletService.transact(transaction.getSender(), transaction.getReceiver(), transaction.getAmount());
         }
     }
 
