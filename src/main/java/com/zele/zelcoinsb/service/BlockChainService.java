@@ -23,9 +23,11 @@ import java.util.logging.Logger;
 public class BlockChainService {
     private final LedgerService ledgerService;
     private final BlockService blockService;
-    private final List<Block> blocks = new ArrayList<>();
     private final BlockRepository blockRepository;
     private final BlockMapper blockMapper;
+
+    private final List<Block> blocks = new ArrayList<>();
+    private final int difficulty = 10;
 
     public BlockChainService(LedgerService ledgerService, BlockService blockService, BlockRepository blockRepository, BlockMapper blockMapper) {
         this.ledgerService = ledgerService;
@@ -48,7 +50,7 @@ public class BlockChainService {
     }
 
     private void checkBlockInChain(Block block, String message) {
-       if (block==null) throw new BlockNotFoundException(message);
+        if (block == null) throw new BlockNotFoundException(message);
     }
 
     // Helper Methods
@@ -56,7 +58,7 @@ public class BlockChainService {
         blocks.add(blockService.createBlock("genesis", transaction));
     }
 
-    public void addBlock(Transaction transaction, PublicKey publicKey, byte[] signature) {
+    public void validateBlock(Transaction transaction, PublicKey publicKey, byte[] signature) {
         Logger logger = Logger.getLogger(BlockChainService.class.getName());
         Signature sign;
         boolean isValid = false;
@@ -71,9 +73,19 @@ public class BlockChainService {
 
         if (isValid) {
             Block newBlock = blockService.createBlock(blocks.getLast().getHash(), transaction);
-            blockService.mineBlock(newBlock, 3);
+            mineBlock(newBlock, difficulty);
             blocks.add(newBlock);
         }
+    }
+
+
+    public void mineBlock(Block block, int difficulty) {
+        String target = new String(new char[difficulty]).replace('\0', '0');
+        while (!block.getHash().substring(0, difficulty).equals(target)) {
+            block.setNonce(block.getNonce() + 1);
+            block.setHash(blockService.calculateHash(block));
+        }
+        System.out.println("Block Mined!!! : " + block.getHash());
     }
 
 }

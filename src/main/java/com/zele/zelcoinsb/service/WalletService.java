@@ -102,7 +102,7 @@ public class WalletService {
         } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
             throw new WalletSignatureErrorException(e.getMessage());
         }
-        blockChainService.addBlock(transaction, senderWallet.getPublicKey(), signature);
+        blockChainService.validateBlock(transaction, senderWallet.getPublicKey(), signature);
         return transaction;
     }
 
