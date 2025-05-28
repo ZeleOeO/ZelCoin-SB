@@ -1,5 +1,6 @@
 package com.zele.zelcoinsb.exceptions;
 
+import com.zele.zelcoinsb.exceptions.block.BlockNotFoundException;
 import com.zele.zelcoinsb.exceptions.transaction.TransactionErrorException;
 import com.zele.zelcoinsb.exceptions.transaction.TransactionNotFoundException;
 import com.zele.zelcoinsb.exceptions.wallet.WalletInsufficientFundsException;
@@ -35,6 +36,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TransactionErrorException.class)
     public ResponseEntity<String> handleTransactionErrorException(TransactionErrorException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BlockNotFoundException.class)
+    public ResponseEntity<String> handleBlockNotFoundException(BlockNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
 }
