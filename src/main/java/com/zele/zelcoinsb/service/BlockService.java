@@ -24,15 +24,15 @@ public class BlockService {
         Block block = new Block();
         block.setHash(calculateHash(block));
         block.setPrevHash(prevHash);
-        block.setTransaction(transaction);
+        block.getTransactions().add(transaction);
         block.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         blockRepository.save(block);
         return block;
     }
 
-    private String calculateHash(Block block) {
+    public String calculateHash(Block block) {
         Logger logger = Logger.getLogger(Block.class.getName());
-        String calculatedHash = block.getPrevHash() + block.getTransaction() + block.getTimestamp() + block.getNonce();
+        String calculatedHash = block.getPrevHash() + block.getTransactions() + block.getTimestamp() + block.getNonce();
         byte[] hash = null;
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -45,12 +45,4 @@ public class BlockService {
         return builder.toString();
     }
 
-    public void mineBlock(Block block, int difficulty) {
-        String target = new String(new char[difficulty]).replace('\0', '0');
-        while (!block.getHash().substring(0, difficulty).equals(target)) {
-            block.setNonce(block.getNonce() + 1);
-            block.setHash(calculateHash(block));
-        }
-        System.out.println("Block Mined!!! : " + block.getHash());
-    }
 }

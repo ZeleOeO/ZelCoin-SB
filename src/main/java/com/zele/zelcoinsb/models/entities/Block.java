@@ -3,6 +3,9 @@ package com.zele.zelcoinsb.models.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -20,7 +23,7 @@ public class Block {
     private int nonce;
     private String timestamp;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "transaction_id")
-    private Transaction transaction;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "block_id")
+    private List<Transaction> transactions = new ArrayList<>();
 }
