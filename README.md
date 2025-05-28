@@ -90,6 +90,7 @@ Contributions are more than welcome, I'm still working on it though, so... keep 
 - [ ] Allow for Manual Block Mining
 - [ ] Add proper Wallet Address
 - [ ] Find some use for this ledger
+- [ ] Add transaction fees
 
 ### _**Notes**_
 
