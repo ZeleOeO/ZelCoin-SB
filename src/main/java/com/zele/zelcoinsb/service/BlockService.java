@@ -22,6 +22,7 @@ public class BlockService {
 
     public Block createBlock(String prevHash, Transaction transaction) {
         Block block = new Block();
+        block.setHash(calculateHash(block));
         block.setPrevHash(prevHash);
         block.setTransaction(transaction);
         block.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
