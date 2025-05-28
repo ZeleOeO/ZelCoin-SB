@@ -88,6 +88,8 @@ Contributions are more than welcome, I'm still working on it though, so... keep 
 - [ ] Add Block Handling
 - [ ] Allow for Block to handle more than one transaction
 - [ ] Allow for Manual Block Mining
+- [ ] Add proper Wallet Address
+- [ ] Find some use for this ledger
 
 ### _**Notes**_
 
