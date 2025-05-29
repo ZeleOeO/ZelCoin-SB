@@ -1,9 +1,33 @@
 services:
-  postgres:
-    image: 'postgres:latest'
+  db:
+    image: postgres:latest
+    container_name: postgres-container
     environment:
-      - 'POSTGRES_DB=zelcoin'
-      - 'POSTGRES_PASSWORD=password'
-      - 'POSTGRES_USER=user'
+      POSTGRES_DB: zelcoin-db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     ports:
-      - '5432:5432'
+      - "5432:5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: zelcoin:1.0
+    container_name: zelcoin-app
+    depends_on:
+      - db
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: zelcoin-db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "8080:8080"
+    restart: on-failure
+
+volumes:
+  pgdata:
