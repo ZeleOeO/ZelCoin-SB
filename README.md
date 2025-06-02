@@ -29,11 +29,17 @@ A Spring Boot version of my core java NoobChain implementation [ZelCoin](https:/
    cd ZelCoin-SB
    ```   
 3. Open docker if not already running (spring-boot-docker-compose is installed so no need for docker-compose)
-4. Run with
+
+### Run Application
+1. Run with
    ```shell
    mvn spring-boot:run
    ```
-5. Optionally, you can run the `src/ZelCoinSbApplication` file on your IDE
+2. Optionally, you can run the `src/ZelCoinSbApplication` file on your IDE
+3. You can also pull the application from my docker repository by running
+    ```shell
+   docker pull image ozonichi/zelcoin:1.0
+   ```
 
 ## Usage
 
