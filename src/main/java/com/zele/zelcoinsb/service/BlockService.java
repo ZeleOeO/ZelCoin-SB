@@ -11,6 +11,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,11 +21,11 @@ import java.util.logging.Logger;
 public class BlockService {
     private final BlockRepository blockRepository;
 
-    public Block createBlock(String prevHash, Transaction transaction) {
+    public Block createBlock(String prevHash, List<Transaction> transaction) {
         Block block = new Block();
         block.setHash(calculateHash(block));
         block.setPrevHash(prevHash);
-        block.getTransactions().add(transaction);
+        block.setTransactions(transaction);
         block.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         blockRepository.save(block);
         return block;

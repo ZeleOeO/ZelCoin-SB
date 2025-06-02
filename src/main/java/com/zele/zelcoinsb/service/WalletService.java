@@ -93,7 +93,7 @@ public class WalletService {
         }
         Transaction transaction = transactionService.createTransaction(amount, senderWallet.getPublicKey(), receiverPublicKey);
         Signature sign;
-        byte[] signature = null;
+        byte[] signature;
         try {
             sign = Signature.getInstance("SHA256withRSA");
             sign.initSign(senderWallet.getPrivateKey());
@@ -102,7 +102,7 @@ public class WalletService {
         } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
             throw new WalletSignatureErrorException(e.getMessage());
         }
-        blockChainService.validateBlock(transaction, senderWallet.getPublicKey(), signature);
+        blockChainService.validateTransaction(transaction, senderWallet.getPublicKey(), signature);
         return transaction;
     }
 

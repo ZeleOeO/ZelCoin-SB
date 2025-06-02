@@ -56,6 +56,7 @@ public class TransactionService {
         return walletService.transact(senderWallet.getPublicKey(), receiverWallet.getPublicKey(), createRequest.getAmount());
     }
 
+    // Helper Methods
     private void checkTransactionInDB(Transaction transaction) {
         if (transaction == null) throw new TransactionNotFoundException("Transaction not found");
     }
