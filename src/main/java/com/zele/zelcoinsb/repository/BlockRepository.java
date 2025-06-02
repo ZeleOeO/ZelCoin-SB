@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface BlockRepository extends JpaRepository<Block, Long> {
     Optional<Block> findByHash(String hash);
+    Boolean existsByPrevHash(String prevHash);
 }

@@ -1,11 +1,13 @@
 package com.zele.zelcoinsb.service;
 
 import com.zele.zelcoinsb.exceptions.block.BlockNotFoundException;
+import com.zele.zelcoinsb.exceptions.transaction.TransactionErrorException;
 import com.zele.zelcoinsb.mapper.BlockMapper;
 import com.zele.zelcoinsb.models.dtos.block.BlockViewDTO;
 import com.zele.zelcoinsb.models.entities.Block;
 import com.zele.zelcoinsb.models.entities.Transaction;
 import com.zele.zelcoinsb.repository.BlockRepository;
+import com.zele.zelcoinsb.repository.TransactionRepository;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,26 +23,29 @@ import java.util.logging.Logger;
 @Getter
 @Service
 public class BlockChainService {
+
     private final LedgerService ledgerService;
     private final BlockService blockService;
     private final BlockRepository blockRepository;
     private final BlockMapper blockMapper;
 
+    // In-memory blockchain & mempool
     private final List<Block> blocks = new ArrayList<>();
-    private final int difficulty = 10;
+    private final List<Transaction> mempool = new ArrayList<>();
 
-    public BlockChainService(LedgerService ledgerService, BlockService blockService, BlockRepository blockRepository, BlockMapper blockMapper) {
+    private final int difficulty = 4;
+    private final TransactionRepository transactionRepository;
+
+    public BlockChainService(LedgerService ledgerService, BlockService blockService, BlockRepository blockRepository, BlockMapper blockMapper, TransactionRepository transactionRepository) {
         this.ledgerService = ledgerService;
         this.blockService = blockService;
         this.blockRepository = blockRepository;
         this.blockMapper = blockMapper;
+        this.transactionRepository = transactionRepository;
     }
 
     public List<BlockViewDTO> getAllBlocks() {
-        return blockRepository.findAll()
-                .stream()
-                .map(blockMapper::toBlockViewDTO)
-                .toList();
+        return blocks.stream().map(blockMapper::toBlockViewDTO).toList();
     }
 
     public ResponseEntity<BlockViewDTO> getBlocksByHash(String hash) {
@@ -49,33 +54,30 @@ public class BlockChainService {
         return ResponseEntity.status(HttpStatus.OK).body(blockMapper.toBlockViewDTO(block));
     }
 
-    private void checkBlockInChain(Block block, String message) {
-        if (block == null) throw new BlockNotFoundException(message);
-    }
 
-    // Helper Methods
-    public void addGenesisBlock(Transaction transaction) {
-        blocks.add(blockService.createBlock("genesis", transaction));
-    }
-
-    public void validateBlock(Transaction transaction, PublicKey publicKey, byte[] signature) {
-        Logger logger = Logger.getLogger(BlockChainService.class.getName());
-        Signature sign;
-        boolean isValid = false;
-        try {
-            sign = Signature.getInstance("SHA256withRSA");
-            sign.initVerify(publicKey);
-            sign.update(transaction.toString().getBytes(StandardCharsets.UTF_8));
-            isValid = sign.verify(signature);
-        } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
-            logger.log(Level.SEVERE, e.getMessage());
+    public ResponseEntity<BlockViewDTO> mineBlock() {
+        if (mempool.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(null);
         }
 
-        if (isValid) {
-            Block newBlock = blockService.createBlock(blocks.getLast().getHash(), transaction);
-            mineBlock(newBlock, difficulty);
-            blocks.add(newBlock);
+        Block lastBlock = blocks.isEmpty() ? null : blocks.getLast();
+        String previousHash = lastBlock == null ? "genesis" : lastBlock.getHash();
+
+        Block newBlock = blockService.createBlock(previousHash, new ArrayList<>(mempool));
+
+        String target = "0".repeat(difficulty);
+        while (!newBlock.getHash().startsWith(target)) {
+            newBlock.setNonce(newBlock.getNonce() + 1);
+            newBlock.setHash(blockService.calculateHash(newBlock));
         }
+
+        blocks.add(newBlock);
+        blockRepository.save(newBlock);
+        mempool.clear();
+
+        System.out.println("Block Mined!!! : " + newBlock.getHash());
+        return ResponseEntity.status(HttpStatus.OK).body(blockMapper.toBlockViewDTO(newBlock));
     }
 
     // Helper Methods
@@ -85,7 +87,6 @@ public class BlockChainService {
             blocks.add(genesis);
             blockRepository.save(genesis);
         }
-        System.out.println("Block Mined!!! : " + block.getHash());
     }
 
     private void checkBlockInChain(Block block, String message) {
