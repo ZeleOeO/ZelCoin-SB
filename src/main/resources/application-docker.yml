@@ -1,0 +1,24 @@
+spring:
+  config:
+    activate:
+      on-profile: docker
+  application:
+    name: ZelCoin-SB
+
+  docker:
+    compose:
+      enabled: true
+
+
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:zelcoin-db}
+    username: ${POSTGRES_USER:user}
+    password: ${POSTGRES_PASSWORD:password}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+springdoc:
+  api-docs:
+    path: /api-docs

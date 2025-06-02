@@ -1,0 +1,7 @@
+spring:
+  profiles:
+    active: native
+
+springdoc:
+  api-docs:
+    path: /api-docs
