@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:latest
-    container_name: postgres-container
+    container_name: postgres
     environment:
       POSTGRES_DB: zelcoin-db
       POSTGRES_USER: user
@@ -15,7 +15,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: zelcoin:1.0
+    image: ozonichi/zelcoin:1.0
     container_name: zelcoin-app
     depends_on:
       - db
@@ -25,6 +25,7 @@ services:
       POSTGRES_DB: zelcoin-db
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
+      SPRING_PROFILES_ACTIVE: docker
     ports:
       - "8080:8080"
     restart: on-failure
