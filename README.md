@@ -63,8 +63,6 @@ For testing, run:
 mvn test
 ```
 
-## Usage
-
 Test the endpoints either using curl or an api client of your choice.
 
 You can also use the [Swagger UI](http://localhost:8080/swagger-ui/index.html) to test endpoints.
