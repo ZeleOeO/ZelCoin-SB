@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:latest
-    container_name: postgres
+    container_name: db
     environment:
       POSTGRES_DB: zelcoin-db
       POSTGRES_USER: user
@@ -16,7 +16,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: ozonichi/zelcoin:1.0
-    container_name: zelcoin-app
+    container_name: app
     depends_on:
       - db
     environment:
