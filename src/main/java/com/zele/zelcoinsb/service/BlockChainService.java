@@ -78,14 +78,37 @@ public class BlockChainService {
         }
     }
 
-
-    public void mineBlock(Block block, int difficulty) {
-        String target = new String(new char[difficulty]).replace('\0', '0');
-        while (!block.getHash().substring(0, difficulty).equals(target)) {
-            block.setNonce(block.getNonce() + 1);
-            block.setHash(blockService.calculateHash(block));
+    // Helper Methods
+    public void addGenesisBlock(Transaction transaction) {
+        if (blocks.isEmpty()) {
+            Block genesis = blockService.createBlock("genesis", List.of(transaction));
+            blocks.add(genesis);
+            blockRepository.save(genesis);
         }
         System.out.println("Block Mined!!! : " + block.getHash());
     }
 
+    private void checkBlockInChain(Block block, String message) {
+        if (block == null) throw new BlockNotFoundException(message);
+    }
+
+    public void validateTransaction(Transaction transaction, PublicKey publicKey, byte[] signature) {
+        try {
+            Signature sign = Signature.getInstance("SHA256withRSA");
+            sign.initVerify(publicKey);
+            sign.update(transaction.toString().getBytes(StandardCharsets.UTF_8));
+
+            boolean isValid = sign.verify(signature);
+            if (isValid) {
+                transactionRepository.save(transaction);
+
+                Transaction attachedTx = transactionRepository.findById(transaction.getId())
+                        .orElseThrow(() -> new TransactionErrorException("Failed to fetch saved transaction"));
+
+                mempool.add(attachedTx);
+            }
+        } catch (Exception e) {
+            throw new TransactionErrorException("Invalid Transaction");
+        }
+    }
 }
